@@ -1,490 +1,371 @@
-![](img/logo-long-chatchat-trans-v2.png)
+![](docs/img/logo-long-chatchat-trans-v2.png)
+<a href="https://trendshift.io/repositories/329" target="_blank"><img src="https://trendshift.io/api/badge/repositories/329" alt="chatchat-space%2FLangchain-Chatchat | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
-**LangChain-Chatchat** (原 Langchain-ChatGLM):  基于 Langchain 与 ChatGLM 等大语言模型的本地知识库问答应用实现。
+[![pypi badge](https://img.shields.io/pypi/v/langchain-chatchat.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/python-3.8%7C3.9%7C3.10%7C3.11-blue.svg)](https://pypi.org/project/pypiserver/)
+
+🌍 [READ THIS IN ENGLISH](README_en.md)
+
+📃 **LangChain-Chatchat** (原 Langchain-ChatGLM)
+
+基于 ChatGLM 等大语言模型与 Langchain 等应用框架实现，开源、可离线部署的 RAG 与 Agent 应用项目。
+
+---
 
 ## 目录
 
-* [介绍](README.md#介绍)
-* [变更日志](README.md#变更日志)
-* [模型支持](README.md#模型支持)
-* [Docker 部署](README.md#Docker-部署)
-* [开发部署](README.md#开发部署)
-  * [软件需求](README.md#软件需求)
-  * [1. 开发环境准备](README.md#1.-开发环境准备)
-  * [2. 下载模型至本地](README.md#2.-下载模型至本地)
-  * [3. 设置配置项](README.md#3.-设置配置项)
-  * [4. 知识库初始化与迁移](README.md#4.-知识库初始化与迁移)
-  * [5. 一键启动API服务或WebUI服务](README.md#6.-一键启动)
-  * [6. 分步启动 API 服务或 Web UI](README.md#5.-启动-API-服务或-Web-UI)
-* [常见问题](README.md#常见问题)
-* [路线图](README.md#路线图)
-* [项目交流群](README.md#项目交流群)
+* [概述](README.md#概述)
+* [功能介绍](README.md#功能介绍)
+    * [0.3.x 功能一览](README.md#03x-版本功能一览)
+    * [已支持的模型推理框架与模型](README.md#已支持的模型部署框架与模型)
+* [快速上手](README.md#快速上手)
+    * [pip 安装部署](README.md#pip-安装部署)
+    * [源码安装部署/开发部署](README.md#源码安装部署开发部署)
+    * [Docker 部署](README.md#docker-部署)
+* [项目里程碑](README.md#项目里程碑)
+* [联系我们](README.md#联系我们)
 
----
+## 概述
 
-## 介绍
+🤖️ 一种利用 [langchain](https://github.com/langchain-ai/langchain)
+思想实现的基于本地知识库的问答应用，目标期望建立一套对中文场景与开源模型支持友好、可离线运行的知识库问答解决方案。
 
-🤖️ 一种利用 [langchain](https://github.com/hwchase17/langchain) 思想实现的基于本地知识库的问答应用，目标期望建立一套对中文场景与开源模型支持友好、可离线运行的知识库问答解决方案。
+💡 受 [GanymedeNil](https://github.com/GanymedeNil) 的项目 [document.ai](https://github.com/GanymedeNil/document.ai)
+和 [AlexZhangji](https://github.com/AlexZhangji)
+创建的 [ChatGLM-6B Pull Request](https://github.com/THUDM/ChatGLM-6B/pull/216)
+启发，建立了全流程可使用开源模型实现的本地知识库问答应用。本项目的最新版本中可使用 [Xinference](https://github.com/xorbitsai/inference)、[Ollama](https://github.com/ollama/ollama)
+等框架接入 [GLM-4-Chat](https://github.com/THUDM/GLM-4)、 [Qwen2-Instruct](https://github.com/QwenLM/Qwen2)、 [Llama3](https://github.com/meta-llama/llama3)
+等模型，依托于 [langchain](https://github.com/langchain-ai/langchain)
+框架支持通过基于 [FastAPI](https://github.com/tiangolo/fastapi) 提供的 API
+调用服务，或使用基于 [Streamlit](https://github.com/streamlit/streamlit) 的 WebUI 进行操作。
 
-💡 受 [GanymedeNil](https://github.com/GanymedeNil) 的项目 [document.ai](https://github.com/GanymedeNil/document.ai) 和 [AlexZhangji](https://github.com/AlexZhangji) 创建的 [ChatGLM-6B Pull Request](https://github.com/THUDM/ChatGLM-6B/pull/216) 启发，建立了全流程可使用开源模型实现的本地知识库问答应用。本项目的最新版本中通过使用 [FastChat](https://github.com/lm-sys/FastChat) 接入 Vicuna, Alpaca, LLaMA, Koala, RWKV 等模型，依托于 [langchain](https://github.com/langchain-ai/langchain) 框架支持通过基于 [FastAPI](https://github.com/tiangolo/fastapi) 提供的 API 调用服务，或使用基于 [Streamlit](https://github.com/streamlit/streamlit) 的 WebUI 进行操作。
+![](docs/img/langchain_chatchat_0.3.0.png)
 
-✅ 依托于本项目支持的开源 LLM 与 Embedding 模型，本项目可实现全部使用**开源**模型**离线私有部署**。与此同时，本项目也支持 OpenAI GPT API 的调用，并将在后续持续扩充对各类模型及模型 API 的接入。
+✅ 本项目支持市面上主流的开源 LLM、 Embedding 模型与向量数据库，可实现全部使用**开源**模型**离线私有部署**。与此同时，本项目也支持
+OpenAI GPT API 的调用，并将在后续持续扩充对各类模型及模型 API 的接入。
 
-⛓️ 本项目实现原理如下图所示，过程包括加载文件 -> 读取文本 -> 文本分割 -> 文本向量化 -> 问句向量化 -> 在文本向量中匹配出与问句向量最相似的 `top k`个 -> 匹配出的文本作为上下文和问题一起添加到 `prompt`中 -> 提交给 `LLM`生成回答。
+⛓️ 本项目实现原理如下图所示，过程包括加载文件 -> 读取文本 -> 文本分割 -> 文本向量化 -> 问句向量化 ->
+在文本向量中匹配出与问句向量最相似的 `top k`个 -> 匹配出的文本作为上下文和问题一起添加到 `prompt`中 -> 提交给 `LLM`生成回答。
 
 📺 [原理介绍视频](https://www.bilibili.com/video/BV13M4y1e7cN/?share_source=copy_web&vd_source=e6c5aafe684f30fbe41925d61ca6d514)
 
-![实现原理图](img/langchain+chatglm.png)
+![实现原理图](docs/img/langchain+chatglm.png)
 
 从文档处理角度来看，实现流程如下：
 
-![实现原理图2](img/langchain+chatglm2.png)
+![实现原理图2](docs/img/langchain+chatglm2.png)
 
 🚩 本项目未涉及微调、训练过程，但可利用微调或训练对本项目效果进行优化。
 
-🌐 [AutoDL 镜像](https://www.codewithgpu.com/i/imClumsyPanda/langchain-ChatGLM/Langchain-Chatchat) 中 `v7` 版本所使用代码已更新至本项目 `v0.2.3` 版本。
+🌐 [AutoDL 镜像](https://www.codewithgpu.com/i/chatchat-space/Langchain-Chatchat/Langchain-Chatchat) 中 `0.3.0`
+版本所使用代码已更新至本项目 `v0.3.0` 版本。
 
-🐳 [Docker 镜像](registry.cn-beijing.aliyuncs.com/chatchat/chatchat:0.2.3)
+🐳 Docker 镜像将会在近期更新。
 
-💻 一行命令运行 Docker 🌲：
+🧑‍💻 如果你想对本项目做出贡献，欢迎移步[开发指南](docs/contributing/README_dev.md) 获取更多开发部署相关信息。
 
-```shell
-docker run -d --gpus all -p 80:8501 registry.cn-beijing.aliyuncs.com/chatchat/chatchat:0.2.3
-```
+## 功能介绍
 
----
+### 0.3.x 版本功能一览
 
-## 变更日志
+| 功能        | 0.2.x                            | 0.3.x                                                               |
+|-----------|----------------------------------|---------------------------------------------------------------------|
+| 模型接入      | 本地：fastchat<br>在线：XXXModelWorker | 本地：model_provider,支持大部分主流模型加载框架<br>在线：oneapi<br>所有模型接入均兼容openai sdk |
+| Agent     | ❌不稳定                             | ✅针对ChatGLM3和Qwen进行优化,Agent能力显著提升                                    ||
+| LLM对话     | ✅                                | ✅                                                                   ||
+| 知识库对话     | ✅                                | ✅                                                                   ||
+| 搜索引擎对话    | ✅                                | ✅                                                                   ||
+| 文件对话      | ✅仅向量检索                           | ✅统一为File RAG功能,支持BM25+KNN等多种检索方式                                    ||
+| 数据库对话     | ❌                                | ✅                                                                   ||
+| 多模态图片对话     | ❌                                | ✅  推荐使用 qwen-vl-chat                   ||
+| ARXIV文献对话 | ❌                                | ✅                                                                   ||
+| Wolfram对话 | ❌                                | ✅                                                                   ||
+| 文生图       | ❌                                | ✅                                                                   ||
+| 本地知识库管理   | ✅                                | ✅                                                                   ||
+| WEBUI     | ✅                                | ✅更好的多会话支持,自定义系统提示词...                                               |
 
-参见 [版本更新日志](https://github.com/imClumsyPanda/langchain-ChatGLM/releases)。
+0.3.x 版本的核心功能由 Agent 实现,但用户也可以手动实现工具调用:
 
-从 `0.1.x` 升级过来的用户请注意，需要按照[开发部署](README.md#3.-开发部署)过程操作，将现有知识库迁移到新格式，具体见[知识库初始化与迁移](docs/INSTALL.md#知识库初始化与迁移)。
+|操作方式|实现的功能|适用场景|
+|-------|---------|-------|
+|选中"启用Agent",选择多个工具|由LLM自动进行工具调用|使用ChatGLM3/Qwen或在线API等具备Agent能力的模型|
+|选中"启用Agent",选择单个工具|LLM仅解析工具参数|使用的模型Agent能力一般,不能很好的选择工具<br>想手动选择功能|
+|不选中"启用Agent",选择单个工具|不使用Agent功能的情况下,手动填入参数进行工具调用|使用的模型不具备Agent能力|
+|不选中任何工具，上传一个图片|图片对话|使用 qwen-vl-chat 等多模态模型|
 
-### `0.2.0` 版本与 `0.1.x` 版本区别
+更多功能和更新请实际部署体验.
 
-1. 使用 [FastChat](https://github.com/lm-sys/FastChat) 提供开源 LLM 模型的 API，以 OpenAI API 接口形式接入，提升 LLM 模型加载效果；
-2. 使用 [langchain](https://github.com/langchain-ai/langchain) 中已有 Chain 的实现，便于后续接入不同类型 Chain，并将对 Agent 接入开展测试；
-3. 使用 [FastAPI](https://github.com/tiangolo/fastapi) 提供 API 服务，全部接口可在 FastAPI 自动生成的 docs 中开展测试，且所有对话接口支持通过参数设置流式或非流式输出；
-4. 使用 [Streamlit](https://github.com/streamlit/streamlit) 提供 WebUI 服务，可选是否基于 API 服务启动 WebUI，增加会话管理，可以自定义会话主题并切换，且后续可支持不同形式输出内容的显示；
-5. 项目中默认 LLM 模型改为 [THUDM/chatglm2-6b](https://huggingface.co/THUDM/chatglm2-6b)，默认 Embedding 模型改为 [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base)，文件加载方式与文段划分方式也有调整，后续将重新实现上下文扩充，并增加可选设置；
-6. 项目中扩充了对不同类型向量库的支持，除支持 [FAISS](https://github.com/facebookresearch/faiss) 向量库外，还提供 [Milvus](https://github.com/milvus-io/milvus), [PGVector](https://github.com/pgvector/pgvector) 向量库的接入；
-7. 项目中搜索引擎对话，除 Bing 搜索外，增加 DuckDuckGo 搜索选项，DuckDuckGo 搜索无需配置 API Key，在可访问国外服务环境下可直接使用。
+### 已支持的模型部署框架与模型
 
----
+本项目中已经支持市面上主流的如 [GLM-4-Chat](https://github.com/THUDM/GLM-4)
+与 [Qwen2-Instruct](https://github.com/QwenLM/Qwen2) 等新近开源大语言模型和 Embedding
+模型，这些模型需要用户自行启动模型部署框架后，通过修改配置信息接入项目，本项目已支持的本地模型部署框架如下：
 
-## 模型支持
+| 模型部署框架             | Xinference                                                                               | LocalAI                                                    | Ollama                                                                         | FastChat                                                                             |
+|--------------------|------------------------------------------------------------------------------------------|------------------------------------------------------------|--------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| OpenAI API 接口对齐    | ✅                                                                                        | ✅                                                          | ✅                                                                              | ✅                                                                                    |
+| 加速推理引擎             | GPTQ, GGML, vLLM, TensorRT, mlx                                                          | GPTQ, GGML, vLLM, TensorRT                                 | GGUF, GGML                                                                     | vLLM                                                                                 |
+| 接入模型类型             | LLM, Embedding, Rerank, Text-to-Image, Vision, Audio                                     | LLM, Embedding, Rerank, Text-to-Image, Vision, Audio       | LLM, Text-to-Image, Vision                                                     | LLM, Vision                                                                          |
+| Function Call      | ✅                                                                                        | ✅                                                          | ✅                                                                              | /                                                                                    |
+| 更多平台支持(CPU, Metal) | ✅                                                                                        | ✅                                                          | ✅                                                                              | ✅                                                                                    |
+| 异构                 | ✅                                                                                        | ✅                                                          | /                                                                              | /                                                                                    |
+| 集群                 | ✅                                                                                        | ✅                                                          | /                                                                              | /                                                                                    |
+| 操作文档链接             | [Xinference 文档](https://inference.readthedocs.io/zh-cn/latest/models/builtin/index.html) | [LocalAI 文档](https://localai.io/model-compatibility/)      | [Ollama 文档](https://github.com/ollama/ollama?tab=readme-ov-file#model-library) | [FastChat 文档](https://github.com/lm-sys/FastChat#install)                            |
+| 可用模型               | [Xinference 已支持模型](https://inference.readthedocs.io/en/latest/models/builtin/index.html) | [LocalAI 已支持模型](https://localai.io/model-compatibility/#/) | [Ollama 已支持模型](https://ollama.com/library#/)                                   | [FastChat 已支持模型](https://github.com/lm-sys/FastChat/blob/main/docs/model_support.md) |
 
-本项目中默认使用的 LLM 模型为 [THUDM/chatglm2-6b](https://huggingface.co/THUDM/chatglm2-6b)，默认使用的 Embedding 模型为 [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base) 为例。
+除上述本地模型加载框架外，项目中也为可接入在线 API 的 [One API](https://github.com/songquanpeng/one-api)
+框架接入提供了支持，支持包括 [OpenAI ChatGPT](https://platform.openai.com/docs/guides/gpt/chat-completions-api)、[Azure OpenAI API](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference)、[Anthropic Claude](https://anthropic.com/)、[智谱清言](https://bigmodel.cn/)、[百川](https://platform.baichuan-ai.com/)
+等常用在线 API 的接入使用。
 
-### LLM 模型支持
+> [!Note]
+> 关于 Xinference 加载本地模型:
+> Xinference 内置模型会自动下载,如果想让它加载本机下载好的模型,可以在启动 Xinference 服务后,到项目 tools/model_loaders
+> 目录下执行 `streamlit run xinference_manager.py`,按照页面提示为指定模型设置本地路径即可.
 
-本项目最新版本中基于 [FastChat](https://github.com/lm-sys/FastChat) 进行本地 LLM 模型接入，支持模型如下：
+## 快速上手
 
-- [meta-llama/Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
-- Vicuna, Alpaca, LLaMA, Koala
-- [BlinkDL/RWKV-4-Raven](https://huggingface.co/BlinkDL/rwkv-4-raven)
-- [camel-ai/CAMEL-13B-Combined-Data](https://huggingface.co/camel-ai/CAMEL-13B-Combined-Data)
-- [databricks/dolly-v2-12b](https://huggingface.co/databricks/dolly-v2-12b)
-- [FreedomIntelligence/phoenix-inst-chat-7b](https://huggingface.co/FreedomIntelligence/phoenix-inst-chat-7b)
-- [h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-7b](https://huggingface.co/h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-7b)
-- [lcw99/polyglot-ko-12.8b-chang-instruct-chat](https://huggingface.co/lcw99/polyglot-ko-12.8b-chang-instruct-chat)
-- [lmsys/fastchat-t5-3b-v1.0](https://huggingface.co/lmsys/fastchat-t5)
-- [mosaicml/mpt-7b-chat](https://huggingface.co/mosaicml/mpt-7b-chat)
-- [Neutralzz/BiLLa-7B-SFT](https://huggingface.co/Neutralzz/BiLLa-7B-SFT)
-- [nomic-ai/gpt4all-13b-snoozy](https://huggingface.co/nomic-ai/gpt4all-13b-snoozy)
-- [NousResearch/Nous-Hermes-13b](https://huggingface.co/NousResearch/Nous-Hermes-13b)
-- [openaccess-ai-collective/manticore-13b-chat-pyg](https://huggingface.co/openaccess-ai-collective/manticore-13b-chat-pyg)
-- [OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5](https://huggingface.co/OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5)
-- [project-baize/baize-v2-7b](https://huggingface.co/project-baize/baize-v2-7b)
-- [Salesforce/codet5p-6b](https://huggingface.co/Salesforce/codet5p-6b)
-- [StabilityAI/stablelm-tuned-alpha-7b](https://huggingface.co/stabilityai/stablelm-tuned-alpha-7b)
-- [THUDM/chatglm-6b](https://huggingface.co/THUDM/chatglm-6b)
-- [THUDM/chatglm2-6b](https://huggingface.co/THUDM/chatglm2-6b)
-- [tiiuae/falcon-40b](https://huggingface.co/tiiuae/falcon-40b)
-- [timdettmers/guanaco-33b-merged](https://huggingface.co/timdettmers/guanaco-33b-merged)
-- [togethercomputer/RedPajama-INCITE-7B-Chat](https://huggingface.co/togethercomputer/RedPajama-INCITE-7B-Chat)
-- [WizardLM/WizardLM-13B-V1.0](https://huggingface.co/WizardLM/WizardLM-13B-V1.0)
-- [WizardLM/WizardCoder-15B-V1.0](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0)
-- [baichuan-inc/baichuan-7B](https://huggingface.co/baichuan-inc/baichuan-7B)
-- [internlm/internlm-chat-7b](https://huggingface.co/internlm/internlm-chat-7b)
-- [Qwen/Qwen-7B-Chat](https://huggingface.co/Qwen/Qwen-7B-Chat)
-- [HuggingFaceH4/starchat-beta](https://huggingface.co/HuggingFaceH4/starchat-beta)
-- 任何 [EleutherAI](https://huggingface.co/EleutherAI) 的 pythia 模型，如 [pythia-6.9b](https://huggingface.co/EleutherAI/pythia-6.9b)
-- 在以上模型基础上训练的任何 [Peft](https://github.com/huggingface/peft) 适配器。为了激活，模型路径中必须有 `peft` 。注意：如果加载多个peft模型，你可以通过在任何模型工作器中设置环境变量 `PEFT_SHARE_BASE_WEIGHTS=true` 来使它们共享基础模型的权重。
+### pip 安装部署
 
-以上模型支持列表可能随 [FastChat](https://github.com/lm-sys/FastChat) 更新而持续更新，可参考 [FastChat 已支持模型列表](https://github.com/lm-sys/FastChat/blob/main/docs/model_support.md)。
+#### 0. 软硬件要求
 
-除本地模型外，本项目也支持直接接入 OpenAI API，具体设置可参考 `configs/model_configs.py.example` 中的 `llm_model_dict` 的 `openai-chatgpt-3.5` 配置信息。
+💡 软件方面，本项目已支持在 Python 3.8-3.11 环境中进行使用，并已在 Windows、macOS、Linux 操作系统中进行测试。
 
-### Embedding 模型支持
+💻 硬件方面，因 0.3.0 版本已修改为支持不同模型部署框架接入，因此可在 CPU、GPU、NPU、MPS 等不同硬件条件下使用。
 
-本项目支持调用 [HuggingFace](https://huggingface.co/models?pipeline_tag=sentence-similarity) 中的 Embedding 模型，已支持的 Embedding 模型如下：
+#### 1. 安装 Langchain-Chatchat
 
-- [moka-ai/m3e-small](https://huggingface.co/moka-ai/m3e-small)
-- [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base)
-- [moka-ai/m3e-large](https://huggingface.co/moka-ai/m3e-large)
-- [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh)
-- [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh)
-- [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh)
-- [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct)
-- [sensenova/piccolo-base-zh](https://huggingface.co/sensenova/piccolo-base-zh)
-- [sensenova/piccolo-large-zh](https://huggingface.co/sensenova/piccolo-large-zh)
-- [shibing624/text2vec-base-chinese-sentence](https://huggingface.co/shibing624/text2vec-base-chinese-sentence)
-- [shibing624/text2vec-base-chinese-paraphrase](https://huggingface.co/shibing624/text2vec-base-chinese-paraphrase)
-- [shibing624/text2vec-base-multilingual](https://huggingface.co/shibing624/text2vec-base-multilingual)
-- [shibing624/text2vec-base-chinese](https://huggingface.co/shibing624/text2vec-base-chinese)
-- [shibing624/text2vec-bge-large-chinese](https://huggingface.co/shibing624/text2vec-bge-large-chinese)
-- [GanymedeNil/text2vec-large-chinese](https://huggingface.co/GanymedeNil/text2vec-large-chinese)
-- [nghuyong/ernie-3.0-nano-zh](https://huggingface.co/nghuyong/ernie-3.0-nano-zh)
-- [nghuyong/ernie-3.0-base-zh](https://huggingface.co/nghuyong/ernie-3.0-base-zh)
-- [OpenAI/text-embedding-ada-002](https://platform.openai.com/docs/guides/embeddings)
-
----
-
-## Docker 部署
-
-🐳 Docker 镜像地址: `registry.cn-beijing.aliyuncs.com/chatchat/chatchat:0.2.3)`
+从 0.3.0 版本起，Langchain-Chatchat 提供以 Python 库形式的安装方式，具体安装请执行：
 
 ```shell
-docker run -d --gpus all -p 80:8501 registry.cn-beijing.aliyuncs.com/chatchat/chatchat:0.2.3
+pip install langchain-chatchat -U
 ```
 
-- 该版本镜像大小 `35.3GB`，使用 `v0.2.3`，以 `nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04` 为基础镜像
-- 该版本内置两个 `embedding` 模型：`m3e-large`，`text2vec-bge-large-chinese`，默认启用后者，内置 `chatglm2-6b-32k`
-- 该版本目标为方便一键部署使用，请确保您已经在Linux发行版上安装了NVIDIA驱动程序
-- 请注意，您不需要在主机系统上安装CUDA工具包，但需要安装 `NVIDIA Driver` 以及 `NVIDIA Container Toolkit`，请参考[安装指南](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- 首次拉取和启动均需要一定时间，首次启动时请参照下图使用 `docker logs -f <container id>` 查看日志
-- 如遇到启动过程卡在 `Waiting..` 步骤，建议使用 `docker exec -it <container id> bash` 进入 `/logs/` 目录查看对应阶段日志
+> [!important]
+> 为确保所使用的 Python 库为最新版，建议使用官方 Pypi 源或清华源。
 
----
+> [!Note]
+> 因模型部署框架 Xinference 接入 Langchain-Chatchat 时需要额外安装对应的 Python 依赖库，因此如需搭配 Xinference
+> 框架使用时，建议使用如下安装方式：
+> ```shell
+> pip install "langchain-chatchat[xinference]" -U
+> ```
 
-## 开发部署
+#### 2. 模型推理框架并加载模型
 
-### 软件需求
+从 0.3.0 版本起，Langchain-Chatchat 不再根据用户输入的本地模型路径直接进行模型加载，涉及到的模型种类包括
+LLM、Embedding、Reranker
+及后续会提供支持的多模态模型等，均改为支持市面常见的各大模型推理框架接入，如 [Xinference](https://github.com/xorbitsai/inference)、[Ollama](https://github.com/ollama/ollama)、[LocalAI](https://github.com/mudler/LocalAI)、[FastChat](https://github.com/lm-sys/FastChat)、[One API](https://github.com/songquanpeng/one-api)
+等。
 
-本项目已在 Python 3.8.1 - 3.10，CUDA 11.7 环境下完成测试。已在 Windows、ARM 架构的 macOS、Linux 系统中完成测试。
+因此，请确认在启动 Langchain-Chatchat 项目前，首先进行模型推理框架的运行，并加载所需使用的模型。
 
-### 1. 开发环境准备
+这里以 Xinference 举例,
+请参考 [Xinference文档](https://inference.readthedocs.io/zh-cn/latest/getting_started/installation.html) 进行框架部署与模型加载。
 
-参见 [开发环境准备](docs/INSTALL.md)。
+> [!WARNING]  
+> 为避免依赖冲突，请将 Langchain-Chatchat 和模型部署框架如 Xinference 等放在不同的 Python 虚拟环境中, 比如 conda, venv,
+> virtualenv 等。
 
-**请注意：** `0.2.3` 及更新版本的依赖包与 `0.1.x` 版本依赖包可能发生冲突，强烈建议新建环境后重新安装依赖包。
+#### 3. 初始化项目配置与数据目录
 
-### 2. 下载模型至本地
+从 0.3.1 版本起，Langchain-Chatchat 使用本地 `yaml` 文件的方式进行配置，用户可以直接查看并修改其中的内容，服务器会自动更新无需重启。
 
-如需在本地或离线环境下运行本项目，需要首先将项目所需的模型下载至本地，通常开源 LLM 与 Embedding 模型可以从 [HuggingFace](https://huggingface.co/models) 下载。
+1. 设置 Chatchat 存储配置文件和数据文件的根目录（可选）
 
-以本项目中默认使用的 LLM 模型 [THUDM/chatglm2-6b](https://huggingface.co/THUDM/chatglm2-6b) 与 Embedding 模型 [moka-ai/m3e-base](https://huggingface.co/moka-ai/m3e-base) 为例：
+```shell
+# on linux or macos
+export CHATCHAT_ROOT=/path/to/chatchat_data
 
-下载模型需要先[安装Git LFS](https://docs.github.com/zh/repositories/working-with-files/managing-large-files/installing-git-large-file-storage)，然后运行
-
-```Shell
-$ git clone https://huggingface.co/THUDM/chatglm2-6b
-
-$ git clone https://huggingface.co/moka-ai/m3e-base
+# on windows
+set CHATCHAT_ROOT=/path/to/chatchat_data
 ```
 
-### 3. 设置配置项
+若不设置该环境变量，则自动使用当前目录。
 
-复制模型相关参数配置模板文件 [configs/model_config.py.example](configs/model_config.py.example) 存储至项目路径下 `./configs` 路径下，并重命名为 `model_config.py`。
+2. 执行初始化
 
-复制服务相关参数配置模板文件 [configs/server_config.py.example](configs/server_config.py.example) 存储至项目路径下 `./configs` 路径下，并重命名为 `server_config.py`。
-
-在开始执行 Web UI 或命令行交互前，请先检查 `configs/model_config.py` 和 `configs/server_config.py` 中的各项模型参数设计是否符合需求：
-
-- 请确认已下载至本地的 LLM 模型本地存储路径写在 `llm_model_dict` 对应模型的 `local_model_path` 属性中，如:
-
-```python
-llm_model_dict={
-                "chatglm2-6b": {
-                        "local_model_path": "/Users/xxx/Downloads/chatglm2-6b",
-                        "api_base_url": "http://localhost:8888/v1",  # "name"修改为 FastChat 服务中的"api_base_url"
-                        "api_key": "EMPTY"
-                    },
-                }
+```shell
+chatchat init
 ```
 
-- 请确认已下载至本地的 Embedding 模型本地存储路径写在 `embedding_model_dict` 对应模型位置，如：
+该命令会执行以下操作：
 
-```python
-embedding_model_dict = {
-                        "m3e-base": "/Users/xxx/Downloads/m3e-base",
-                       }
-```
+- 创建所有需要的数据目录
+- 复制 samples 知识库内容
+- 生成默认 `yaml` 配置文件
 
-如果你选择使用OpenAI的Embedding模型，请将模型的 ``key``写入 `embedding_model_dict`中。使用该模型，你需要能够访问OpenAI官的API，或设置代理。
+3. 修改配置文件
 
-### 4. 知识库初始化与迁移
+- 配置模型（model_settings.yaml）  
+  需要根据步骤 **2. 模型推理框架并加载模型**
+  中选用的模型推理框架与加载的模型进行模型接入配置，具体参考 `model_settings.yaml` 中的注释。主要修改以下内容：
+  ```yaml
+  # 默认选用的 LLM 名称
+   DEFAULT_LLM_MODEL: qwen1.5-chat
 
-当前项目的知识库信息存储在数据库中，在正式运行项目之前请先初始化数据库（我们强烈建议您在执行操作前备份您的知识文件）。
+   # 默认选用的 Embedding 名称
+   DEFAULT_EMBEDDING_MODEL: bge-large-zh-v1.5
 
-- 如果您是从 `0.1.x` 版本升级过来的用户，针对已建立的知识库，请确认知识库的向量库类型、Embedding 模型与 `configs/model_config.py` 中默认设置一致，如无变化只需以下命令将现有知识库信息添加到数据库即可：
-
-  ```shell
-  $ python init_database.py
+  # 将 `LLM_MODEL_CONFIG` 中 `llm_model, action_model` 的键改成对应的 LLM 模型
+  # 在 `MODEL_PLATFORMS` 中修改对应模型平台信息
   ```
-- 如果您是第一次运行本项目，知识库尚未建立，或者配置文件中的知识库类型、嵌入模型发生变化，或者之前的向量库没有开启 `normalize_L2`，需要以下命令初始化或重建知识库：
+- 配置知识库路径（basic_settings.yaml）（可选）  
+  默认知识库位于 `CHATCHAT_ROOT/data/knowledge_base`，如果你想把知识库放在不同的位置，或者想连接现有的知识库，可以在这里修改对应目录即可。
+  ```yaml
+  # 知识库默认存储路径
+   KB_ROOT_PATH: D:\chatchat-test\data\knowledge_base
 
-  ```shell
-  $ python init_database.py --recreate-vs
+   # 数据库默认存储路径。如果使用sqlite，可以直接修改DB_ROOT_PATH；如果使用其它数据库，请直接修改SQLALCHEMY_DATABASE_URI。
+   DB_ROOT_PATH: D:\chatchat-test\data\knowledge_base\info.db
+
+   # 知识库信息数据库连接URI
+   SQLALCHEMY_DATABASE_URI: sqlite:///D:\chatchat-test\data\knowledge_base\info.db
   ```
+- 配置知识库（kb_settings.yaml）（可选）
 
-### 5. 一键启动API 服务或 Web UI
+  默认使用 `FAISS` 知识库，如果想连接其它类型的知识库，可以修改 `DEFAULT_VS_TYPE` 和 `kbs_config`。
 
-#### 5.1 启动命令
+#### 4. 初始化知识库
 
-一键启动脚本 startup.py,一键启动所有 Fastchat 服务、API 服务、WebUI 服务，示例代码：
-
-```shell
-$ python startup.py -a
-```
-
-并可使用 `Ctrl + C` 直接关闭所有运行服务。如果一次结束不了，可以多按几次。
-
-可选参数包括 `-a (或--all-webui)`, `--all-api`, `--llm-api`, `-c (或--controller)`, `--openai-api`,
-`-m (或--model-worker)`, `--api`, `--webui`，其中：
-
-- `--all-webui` 为一键启动 WebUI 所有依赖服务；
-- `--all-api` 为一键启动 API 所有依赖服务；
-- `--llm-api` 为一键启动 Fastchat 所有依赖的 LLM 服务；
-- `--openai-api` 为仅启动 FastChat 的 controller 和 openai-api-server 服务；
-- 其他为单独服务启动选项。
-
-#### 5.2 启动非默认模型
-
-若想指定非默认模型，需要用 `--model-name` 选项，示例：
+> [!WARNING]  
+> 进行知识库初始化前，请确保已经启动模型推理框架及对应 `embedding` 模型，且已按照上述**步骤3**完成模型接入配置。
 
 ```shell
-$ python startup.py --all-webui --model-name Qwen-7B-Chat
+chatchat kb -r
 ```
 
-更多信息可通过 `python startup.py -h`查看。
+更多功能可以查看 `chatchat kb --help`
 
-#### 5.3 多卡加载
+出现以下日志即为成功:
 
-项目支持多卡加载，需在 startup.py 中的 create_model_worker_app 函数中，修改如下三个参数:
+```text 
 
-```python
-gpus=None, 
-num_gpus=1, 
-max_gpu_memory="20GiB"
+----------------------------------------------------------------------------------------------------
+知识库名称      ：samples
+知识库类型      ：faiss
+向量模型：      ：bge-large-zh-v1.5
+知识库路径      ：/root/anaconda3/envs/chatchat/lib/python3.11/site-packages/chatchat/data/knowledge_base/samples
+文件总数量      ：47
+入库文件数      ：42
+知识条目数      ：740
+用时            ：0:02:29.701002
+----------------------------------------------------------------------------------------------------
+
+总计用时        ：0:02:33.414425
+
 ```
 
-其中，`gpus` 控制使用的显卡的ID，例如 "0,1";
+> [!Note]
+> 知识库初始化的常见问题
+>
+> <details>
+>
+> ##### 1. Windows 下重建知识库或添加知识文件时卡住不动
+> 此问题常出现于新建虚拟环境中，可以通过以下方式确认：
+>
+> `from unstructured.partition.auto import partition`
+>
+> 如果该语句卡住无法执行，可以执行以下命令：
+> ```shell
+> pip uninstall python-magic-bin
+> # check the version of the uninstalled package
+> pip install 'python-magic-bin=={version}'
+> ```
+> 然后按照本节指引重新创建知识库即可。
+>
+> </details>
 
-`num_gpus` 控制使用的卡数;
-
-`max_gpu_memory` 控制每个卡使用的显存容量。
-
-注1：server_config.py的FSCHAT_MODEL_WORKERS字典中也增加了相关配置，如有需要也可通过修改FSCHAT_MODEL_WORKERS字典中对应参数实现多卡加载。
-
-注2：少数情况下，gpus参数会不生效，此时需要通过设置环境变量CUDA_VISIBLE_DEVICES来指定torch可见的gpu,示例代码：
+#### 5. 启动项目
 
 ```shell
-CUDA_VISIBLE_DEVICES=0,1 python startup.py -a
+chatchat start -a
 ```
 
-#### 5.4 PEFT 加载(包括lora,p-tuning,prefix tuning, prompt tuning,ia3等)
+出现以下界面即为启动成功:
 
-本项目基于 FastChat 加载 LLM 服务，故需以 FastChat 加载 PEFT 路径，即保证路径名称里必须有 peft 这个词，配置文件的名字为 adapter_config.json，peft 路径下包含.bin 格式的 PEFT 权重，peft路径在startup.py中create_model_worker_app函数的args.model_names中指定，并开启环境变量PEFT_SHARE_BASE_WEIGHTS=true参数。
+![WebUI界面](docs/img/langchain_chatchat_webui.png)
 
-注：如果上述方式启动失败，则需要以标准的fastchat服务启动方式分步启动，分步启动步骤参考第六节，PEFT加载详细步骤参考[加载lora微调后模型失效](https://github.com/chatchat-space/Langchain-Chatchat/issues/1130#issuecomment-1685291822)，
+> [!WARNING]  
+> 由于 chatchat 配置默认监听地址 `DEFAULT_BIND_HOST` 为 127.0.0.1, 所以无法通过其他 ip 进行访问。
+>
+> 如需通过机器ip 进行访问(如 Linux 系统), 需要到 `basic_settings.yaml` 中将监听地址修改为 0.0.0.0。
+> </details>
 
-#### **5.5 注意事项：**
+### 其它配置
 
-**1. startup 脚本用多进程方式启动各模块的服务，可能会导致打印顺序问题，请等待全部服务发起后再调用，并根据默认或指定端口调用服务（默认 LLM API 服务端口：`127.0.0.1:8888`,默认 API 服务端口：`127.0.0.1:7861`,默认 WebUI 服务端口：`本机IP：8501`)**
+1. 数据库对话配置请移步这里 [数据库对话配置说明](docs/install/README_text2sql.md)
 
-**2.服务启动时间示设备不同而不同，约 3-10 分钟，如长时间没有启动请前往 `./logs`目录下监控日志，定位问题。**
 
-**3. 在Linux上使用ctrl+C退出可能会由于linux的多进程机制导致multiprocessing遗留孤儿进程，可通过shutdown_all.sh进行退出**
+### 源码安装部署/开发部署
 
-#### 5.6 启动界面示例：
+源码安装部署请参考 [开发指南](docs/contributing/README_dev.md)
 
-1. FastAPI docs 界面
-
-![](img/fastapi_docs_020_0.png)
-
-2. webui启动界面示例：
-
-- Web UI 对话界面：
-  ![img](img/webui_0813_0.png)
-- Web UI 知识库管理页面：
-  ![](img/webui_0813_1.png)
-
-### 6 分步启动 API 服务或 Web UI
-
-注意：如使用了一键启动方式，可忽略本节。
-
-#### 6.1 启动 LLM 服务
-
-如需使用开源模型进行本地部署，需首先启动 LLM 服务，启动方式分为三种：
-
-- [基于多进程脚本 llm_api.py 启动 LLM 服务](README.md#5.1.1-基于多进程脚本-llm_api.py-启动-LLM-服务)
-- [基于命令行脚本 llm_api_stale.py 启动 LLM 服务](README.md#5.1.2-基于命令行脚本-llm_api_stale.py-启动-LLM-服务)
-- [PEFT 加载](README.md#5.1.3-PEFT-加载)
-
-三种方式只需选择一个即可，具体操作方式详见 5.1.1 - 5.1.3。
-
-如果启动在线的API服务（如 OPENAI 的 API 接口），则无需启动 LLM 服务，即 5.1 小节的任何命令均无需启动。
-
-##### 6.1.1 基于多进程脚本 llm_api.py 启动 LLM 服务
-
-在项目根目录下，执行 [server/llm_api.py](server/llm_api.py) 脚本启动 **LLM 模型**服务：
+### Docker 部署
 
 ```shell
-$ python server/llm_api.py
+docker pull chatimage/chatchat:0.3.1.3-93e2c87-20240829
+
+docker pull ccr.ccs.tencentyun.com/langchain-chatchat/chatchat:0.3.1.3-93e2c87-20240829 # 国内镜像
 ```
 
-项目支持多卡加载，需在 llm_api.py 中的 create_model_worker_app 函数中，修改如下三个参数:
+> [!important]
+> 强烈建议: 使用 docker-compose 部署, 具体参考 [README_docker](docs/install/README_docker.md)
 
-```python
-gpus=None, 
-num_gpus=1, 
-max_gpu_memory="20GiB"
-```
+### 旧版本迁移
 
-其中，`gpus` 控制使用的显卡的ID，如果 "0,1";
+* 0.3.x 结构改变很大,强烈建议您按照文档重新部署. 以下指南不保证100%兼容和成功. 记得提前备份重要数据!
 
-`num_gpus` 控制使用的卡数;
-
-`max_gpu_memory` 控制每个卡使用的显存容量。
-
-##### 6.1.2 基于命令行脚本 llm_api_stale.py 启动 LLM 服务
-
-⚠️ **注意:**
-
-**1.llm_api_stale.py脚本原生仅适用于linux,mac设备需要安装对应的linux命令,win平台请使用wsl;**
-
-**2.加载非默认模型需要用命令行参数--model-path-address指定模型，不会读取model_config.py配置;**
-
-在项目根目录下，执行 [server/llm_api_stale.py](server/llm_api_stale.py) 脚本启动 **LLM 模型**服务：
-
-```shell
-$ python server/llm_api_stale.py
-```
-
-该方式支持启动多个worker，示例启动方式：
-
-```shell
-$ python server/llm_api_stale.py --model-path-address model1@host1@port1 model2@host2@port2
-```
-
-如果出现server端口占用情况，需手动指定server端口,并同步修改model_config.py下对应模型的base_api_url为指定端口:
-
-```shell
-$ python server/llm_api_stale.py --server-port 8887
-```
-
-如果要启动多卡加载，示例命令如下：
-
-```shell
-$ python server/llm_api_stale.py --gpus 0,1 --num-gpus 2 --max-gpu-memory 10GiB
-```
-
-注：以如上方式启动LLM服务会以nohup命令在后台运行 FastChat 服务，如需停止服务，可以运行如下命令：
-
-```shell
-$ python server/llm_api_shutdown.py --serve all 
-```
-
-亦可单独停止一个 FastChat 服务模块，可选 [`all`, `controller`, `model_worker`, `openai_api_server`]
-
-##### 6.1.3 PEFT 加载(包括lora,p-tuning,prefix tuning, prompt tuning,ia3等)
-
-本项目基于 FastChat 加载 LLM 服务，故需以 FastChat 加载 PEFT 路径，即保证路径名称里必须有 peft 这个词，配置文件的名字为 adapter_config.json，peft 路径下包含 model.bin 格式的 PEFT 权重。
-详细步骤参考[加载lora微调后模型失效](https://github.com/chatchat-space/Langchain-Chatchat/issues/1130#issuecomment-1685291822)
-
-![image](https://github.com/chatchat-space/Langchain-Chatchat/assets/22924096/4e056c1c-5c4b-4865-a1af-859cd58a625d)
-
-#### 6.2 启动 API 服务
-
-本地部署情况下，按照 [5.1 节](README.md#5.1-启动-LLM-服务)**启动 LLM 服务后**，再执行 [server/api.py](server/api.py) 脚本启动 **API** 服务；
-
-在线调用API服务的情况下，直接执执行 [server/api.py](server/api.py) 脚本启动 **API** 服务；
-
-调用命令示例：
-
-```shell
-$ python server/api.py
-```
-
-启动 API 服务后，可访问 `localhost:7861` 或 `{API 所在服务器 IP}:7861` FastAPI 自动生成的 docs 进行接口查看与测试。
-
-- FastAPI docs 界面
-
-  ![](img/fastapi_docs_020_0.png)
-
-#### 6.3 启动 Web UI 服务
-
-按照 [5.2 节](README.md#5.2-启动-API-服务)**启动 API 服务后**，执行 [webui.py](webui.py) 启动 **Web UI** 服务（默认使用端口 `8501`）
-
-```shell
-$ streamlit run webui.py
-```
-
-使用 Langchain-Chatchat 主题色启动 **Web UI** 服务（默认使用端口 `8501`）
-
-```shell
-$ streamlit run webui.py --theme.base "light" --theme.primaryColor "#165dff" --theme.secondaryBackgroundColor "#f5f5f5" --theme.textColor "#000000"
-```
-
-或使用以下命令指定启动 **Web UI** 服务并指定端口号
-
-```shell
-$ streamlit run webui.py --server.port 666
-```
-
-- Web UI 对话界面：
-
-  ![](img/webui_0813_0.png)
-- Web UI 知识库管理页面：
-
-  ![](img/webui_0813_1.png)
+- 首先按照 `安装部署` 中的步骤配置运行环境，修改配置文件
+- 将 0.2.x 项目的 knowledge_base 目录拷贝到配置的 `DATA` 目录下
 
 ---
 
-## 常见问题
+## 项目里程碑
 
-参见 [常见问题](docs/FAQ.md)。
++ `2023年4月`: `Langchain-ChatGLM 0.1.0` 发布，支持基于 ChatGLM-6B 模型的本地知识库问答。
++ `2023年8月`: `Langchain-ChatGLM` 改名为 `Langchain-Chatchat`，发布 `0.2.0` 版本，使用 `fastchat` 作为模型加载方案，支持更多的模型和数据库。
++ `2023年10月`: `Langchain-Chatchat 0.2.5` 发布，推出 Agent 内容，开源项目在`Founder Park & Zhipu AI & Zilliz`
+  举办的黑客马拉松获得三等奖。
++ `2023年12月`: `Langchain-Chatchat` 开源项目获得超过 **20K** stars.
++ `2024年6月`: `Langchain-Chatchat 0.3.0` 发布，带来全新项目架构。
 
----
-
-## 路线图
-
-- [X] Langchain 应用
-  - [X] 本地数据接入
-    - [X] 接入非结构化文档
-      - [X] .md
-      - [X] .txt
-      - [X] .docx
-    - [ ] 结构化数据接入
-      - [X] .csv
-      - [ ] .xlsx
-    - [ ] 分词及召回
-      - [ ] 接入不同类型 TextSplitter
-      - [ ] 优化依据中文标点符号设计的 ChineseTextSplitter
-      - [ ] 重新实现上下文拼接召回
-    - [ ] 本地网页接入
-    - [ ] SQL 接入
-    - [ ] 知识图谱/图数据库接入
-  - [X] 搜索引擎接入
-    - [X] Bing 搜索
-    - [X] DuckDuckGo 搜索
-  - [ ] Agent 实现
-- [X] LLM 模型接入
-  - [X] 支持通过调用 [FastChat](https://github.com/lm-sys/fastchat) api 调用 llm
-  - [ ] 支持 ChatGLM API 等 LLM API 的接入
-- [X] Embedding 模型接入
-  - [X] 支持调用 HuggingFace 中各开源 Emebdding 模型
-  - [ ] 支持 OpenAI Embedding API 等 Embedding API 的接入
-- [X] 基于 FastAPI 的 API 方式调用
-- [X] Web UI
-  - [X] 基于 Streamlit 的 Web UI
++ 🔥 让我们一起期待未来 Chatchat 的故事 ···
 
 ---
 
-## 项目交流群
+## 协议
 
-<img src="img/qr_code_60.jpg" alt="二维码" width="300" height="300" />
+本项目代码遵循 [Apache-2.0](LICENSE) 协议。
 
-🎉 langchain-ChatGLM 项目微信交流群，如果你也对本项目感兴趣，欢迎加入群聊参与讨论交流。
+## 联系我们
+
+### Telegram
+
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white "langchain-chatchat")](https://t.me/+RjliQ3jnJ1YyN2E9)
+
+### 项目交流群
+
+<img src="docs/img/qr_code_117_2.jpg" alt="二维码" width="300" />
+
+🎉 Langchain-Chatchat 项目微信交流群，如果你也对本项目感兴趣，欢迎加入群聊参与讨论交流。
+
+### 公众号
+
+<img src="docs/img/official_wechat_mp_account.png" alt="二维码" width="300" />
+
+🎉 Langchain-Chatchat 项目官方公众号，欢迎扫码关注。
+
+## 引用
+
+如果本项目有帮助到您的研究，请引用我们：
+
+```
+@software{langchain_chatchat,
+    title        = {{langchain-chatchat}},
+    author       = {Liu, Qian and Song, Jinke, and Huang, Zhiguo, and Zhang, Yuxuan, and glide-the, and liunux4odoo},
+    year         = 2024,
+    journal      = {GitHub repository},
+    publisher    = {GitHub},
+    howpublished = {\url{https://github.com/chatchat-space/Langchain-Chatchat}}
+}
+```
